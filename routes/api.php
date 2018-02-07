@@ -21,6 +21,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
 	// 分类
 	Route::get('/category', 'CategoryController@index')->name('admin-category');
 	Route::post('/category/add', 'CategoryController@add')->name('admin-category-add');
+
+	// 文章
+	Route::get('/article/add', 'ArticleController@add_data')->name('admin-article-add-data');
 });
 
 Route::get('/login', function () {

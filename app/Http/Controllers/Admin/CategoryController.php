@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 class CategoryController extends ApiController {
 
 	public function index() {
-		return ['1'];
+		$data = Category::paginate(10);
+		return $this->success($data);
 	}
 
 	public function add(Request $req) {
