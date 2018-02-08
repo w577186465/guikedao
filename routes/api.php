@@ -24,6 +24,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
 
 	// 文章
 	Route::get('/article/add', 'ArticleController@add_data')->name('admin-article-add-data');
+
+	// 会员
+	Route::get('/member/group', 'UserGroupController@index')->name('admin-usergroup');
+	Route::post('/member/group/add', 'UserGroupController@add')->name('admin-usergroup-add');
 });
 
 Route::get('/login', function () {
