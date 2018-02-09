@@ -36,6 +36,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
 	Route::post('/admin/member/group/add', 'UserGroupController@add')->name('admin-usergroup-add');
 	Route::post('/admin/member/group/edit', 'UserGroupController@edit')->name('admin-usergroup-edit');
 	Route::get('/admin/member/group/delete/{id}', 'UserGroupController@delete')->name('admin-usergroup-delete');
+
+	// 七牛上传
+	Route::post('/admin/qiniu/upload_token', 'QiniuController@index')->name('admin-qiniu-uploadtoken');
 });
 
 Route::get('/login', function () {
