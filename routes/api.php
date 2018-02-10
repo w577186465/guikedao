@@ -27,6 +27,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
 	// 文章
 	Route::get('/admin/article', 'ArticleController@index')->name('admin-article');
 	Route::get('/admin/article/add', 'ArticleController@add_data')->name('admin-article-add-data');
+	Route::post('/admin/article/add', 'ArticleController@add')->name('admin-article-add');
+	Route::get('/admin/article/delete/{id}', 'ArticleController@delete')->name('admin-article-delete');
 
 	// 会员
 	Route::get('/admin/member', 'UserController@index')->name('admin-member');
@@ -39,6 +41,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
 
 	// 七牛上传
 	Route::post('/admin/qiniu/upload_token', 'QiniuController@index')->name('admin-qiniu-uploadtoken');
+
+	// 本地上传
+	Route::post('/admin/uploader', 'UploaderController@upload')->name('admin-uploader');
 });
 
 Route::get('/login', function () {
