@@ -26,8 +26,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
 
 	// 文章
 	Route::get('/admin/article', 'ArticleController@index')->name('admin-article');
-	Route::get('/admin/article/add', 'ArticleController@add_data')->name('admin-article-add-data');
-	Route::post('/admin/article/add', 'ArticleController@add')->name('admin-article-add');
+	Route::get('/admin/article/list', 'ArticleController@list')->name('admin-article-list');
+	Route::get('/admin/article/add', 'ArticleController@add_data')->name('admin-article-add-data'); // 获取添加页面数据
+	Route::get('/admin/article/edit/{id}', 'ArticleController@edit_data')->name('admin-article-edit-data'); // 获取修改页面数据
+	Route::post('/admin/article/add', 'ArticleController@add')->name('admin-article-add'); // 提交添加
+	Route::post('/admin/article/edit/{id}', 'ArticleController@edit')->name('admin-article-edit'); // 提交修改
 	Route::get('/admin/article/delete/{id}', 'ArticleController@delete')->name('admin-article-delete');
 
 	// 会员
@@ -44,6 +47,19 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
 
 	// 本地上传
 	Route::post('/admin/uploader', 'UploaderController@upload')->name('admin-uploader');
+});
+
+Route::group(['namespace' => 'Web'], function () {
+	// 文章
+	Route::get('/article', 'ArticleController@index')->name('article'); // 列表
+	Route::get('/article/{id}', 'ArticleController@single')->name('article-single')->where('id', '[0-9]+'); // 详情页
+	Route::get('/article/category', 'ArticleController@category')->name('article-category'); // 文章分类
+
+	// 会员
+	Route::get('/member/{openid}', 'MemberController@item')->name('member-item');
+	Route::post('/member/add', 'MemberController@add')->name('member-add');
+	Route::post('/member/signup', 'MemberController@signup')->name('member-signup');
+
 });
 
 Route::get('/login', function () {

@@ -11,7 +11,7 @@ class UploaderController extends ApiController {
 		$file = $req->file('file');
 		$date = date("Y/m");
 		$path = $file->store('images/' . $date);
-		$path = env('APP_URL') . 'storage/' . $path;
+		$path = env('APP_URL') . '/storage/' . $path;
 		return $this->success($path);
 	}
 

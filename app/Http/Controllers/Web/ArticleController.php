@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web;
 
 use App\Article;
 use App\Category;
@@ -10,19 +10,41 @@ use Illuminate\Http\Request;
 
 class ArticleController extends ApiController {
 
-	public function index() {
-		$article = Article::paginate(10);
+	public function index(Request $req) {
+		$catid = $req->input('catid', false);
+
+		$where = [];
+		if ($catid) {
+			$where['category_id'] = $catid;
+		}
+		$article = Article::where($where)->orderBy('updated_at', 'desc')->paginate(10);
 		$category = Category::paginate(10);
 		$data = [
 			'article' => $article,
 			'category' => $category,
 		];
+
 		return $this->success($data);
+	}
+
+	public function single($id) {
+		$article = Article::find($id);
+		return $this->success($article);
 	}
 
 	public function list() {
 		$article = Article::paginate(10);
 		return $this->success($article);
+	}
+
+	public function category() {
+		$category = Category::orderBy('id', 'desc')->get();
+		$data = [];
+		foreach ($category as $key => $value) {
+			$data[$value->id] = $value->name;
+		}
+
+		return $this->success($data);
 	}
 
 	// 添加页面数据
