@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Member;
 use App\Http\Controllers\ApiController;
+use App\Member;
 use Illuminate\Http\Request;
 
 class MemberController extends ApiController {
 
 	public function item($openid) {
 		$member = Member::where('openid', $openid)->first();
+		if (!isset($member->id)) {
+			return $this->failed('会员不存在');
+		}
 		return $this->success($member);
 	}
 
@@ -20,22 +23,23 @@ class MemberController extends ApiController {
 	}
 
 	public function signup(Request $req) {
-		if (!$req->filled(['avatar', 'name', 'sex', 'tel', 'region', 'adress', 'certnumber'])) {
+		if (!$req->filled(['openid', 'avatar', 'name', 'sex', 'tel', 'region', 'adress', 'certnumber'])) {
 			return $this->failed('信息填写不正确');
 		}
-
+		$openid = $req->input('openid');
 		$regions = $req->input('region');
-		$region = $regions[len($regions)-1];
-		$member = Member::where('openid', $openid)->first();
-		$member->avatar = $req->input('avatar');
-		$member->name = $req->input('name');
-		$member->sex = $req->input('sex');
-		$member->tel = $req->input('tel');
-		$member->region = $region;
-		$member->adress = $req->input('adress');
-		$member->certnumber = $req->input('certnumber');
-		$member->status = 2;
-		$res = $member->save();
+		$region = $regions[count($regions) - 1];
+		$member = [];
+		$member['avatar'] = $req->input('avatar');
+		$member['name'] = $req->input('name');
+		$member['sex'] = $req->input('sex');
+		$member['tel'] = $req->input('tel');
+		$member['region'] = $region;
+		$member['adress'] = $req->input('adress');
+		$member['certnumber'] = $req->input('certnumber');
+		$member['status'] = 2;
+		$res = Member::where('openid', $openid)->update($member);
+
 		if ($res) {
 			return $this->message('申请成功，请等待审核');
 		}

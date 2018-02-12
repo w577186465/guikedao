@@ -35,6 +35,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
 
 	// 会员
 	Route::get('/admin/member', 'UserController@index')->name('admin-member');
+	Route::get('/admin/member/list', 'UserController@list')->name('admin-member-list');
+	Route::get('/admin/member/examine', 'UserController@examine')->name('admin-member-examine');
 
 	// 会员组
 	Route::get('/admin/member/group', 'UserGroupController@index')->name('admin-usergroup');
@@ -60,6 +62,7 @@ Route::group(['namespace' => 'Web'], function () {
 	Route::post('/member/add', 'MemberController@add')->name('member-add');
 	Route::post('/member/signup', 'MemberController@signup')->name('member-signup');
 
+	Route::post('/uploader', 'UploaderController@upload')->name('uploader');
 });
 
 Route::get('/login', function () {
