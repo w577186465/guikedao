@@ -27,17 +27,24 @@ class MemberController extends ApiController {
 			return $this->failed('信息填写不正确');
 		}
 		$openid = $req->input('openid');
-		$regions = $req->input('region');
-		$region = $regions[count($regions) - 1];
 		$member = [];
 		$member['avatar'] = $req->input('avatar');
-		$member['name'] = $req->input('name');
-		$member['sex'] = $req->input('sex');
 		$member['tel'] = $req->input('tel');
-		$member['region'] = $region;
+		$member['province'] = $req->input('province');
+		$member['city'] = $req->input('city');
+		$member['region'] = $req->input('region');
+		$member['regiondesc'] = $req->input('regiondesc');
 		$member['adress'] = $req->input('adress');
-		$member['certnumber'] = $req->input('certnumber');
-		$member['status'] = 2;
+
+		$get = Member::where('openid', $openid)->first();
+		
+		if ($get->status != 1) {
+			$member['sex'] = $req->input('sex');
+			$member['name'] = $req->input('name');
+			$member['certnumber'] = $req->input('certnumber');
+			$member['status'] = 2;
+		}
+
 		$res = Member::where('openid', $openid)->update($member);
 
 		if ($res) {

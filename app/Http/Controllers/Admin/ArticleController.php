@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class ArticleController extends ApiController {
 
 	public function index() {
-		$article = Article::paginate(10);
+		$article = Article::orderBy('id', 'desc')->paginate(10);
 		$category = Category::paginate(10);
 		$data = [
 			'article' => $article,
@@ -21,13 +21,13 @@ class ArticleController extends ApiController {
 	}
 
 	public function list() {
-		$article = Article::paginate(10);
+		$article = Article::orderBy('id', 'desc')->paginate(10);
 		return $this->success($article);
 	}
 
 	// 添加页面数据
 	public function add_data() {
-		$category = Category::paginate(10);
+		$category = Category::orderBy('id', 'desc')->paginate(10);
 		$usergroup = UserGroup::get();
 		$data = [
 			'category' => $category,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Article;
 use App\Category;
 use App\UserGroup;
+use App\Member;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 
@@ -18,22 +19,49 @@ class ArticleController extends ApiController {
 			$where['category_id'] = $catid;
 		}
 		$article = Article::where($where)->orderBy('updated_at', 'desc')->paginate(10);
-		$category = Category::paginate(10);
 		$data = [
 			'article' => $article,
-			'category' => $category,
 		];
 
 		return $this->success($data);
 	}
 
-	public function single($id) {
+	public function single(Request $req, $id) {
+		if (!filled('openid')) {
+			return $this->message('无权限，请登录。', 403);
+		}
+
+		$openid = $req->input('openid');
+		
 		$article = Article::find($id);
+
+		// 判断文章是否允许初级会员访问
+		$allow = false;
+		$permissions = explode(',', $article->permission);
+		foreach ($permissions as $key => $value) {
+			if ($value == 1) {
+				$allow = true;
+				break;
+			}
+		}
+
+		$user = Member::where('openid', $openid)->first();
+		if ($user->status != 1 && !$allow) {
+			return $this->message('无权限，请申请未高级会员', 401);
+		}
+
+		$article->view = $article->view + 1;
+
+		if ($user->status == 1) {
+			$article->gview = $article->gview + 1;
+		}
+		$article->save();
+
 		return $this->success($article);
 	}
 
 	public function list() {
-		$article = Article::paginate(10);
+		$article = Article::orderBy('updated_at', 'desc')->paginate(10);
 		return $this->success($article);
 	}
 
@@ -49,7 +77,7 @@ class ArticleController extends ApiController {
 
 	// 添加页面数据
 	public function add_data() {
-		$category = Category::paginate(10);
+		$category = Category::orderBy('updated_at', 'desc')->paginate(10);
 		$usergroup = UserGroup::get();
 		$data = [
 			'category' => $category,
@@ -79,59 +107,6 @@ class ArticleController extends ApiController {
 		}
 
 		return $this->failed('添加失败');
-	}
-
-	// 修改页面数据
-	public function edit_data($id) {
-		$article = Article::find($id);
-		$permission = explode(',', $article->permission);
-
-		foreach ($permission as $key => $value) {
-			$permission[$key] = (int)$value;
-		}
-
-		$article->permission = $permission;
-		
-		$category = Category::get();
-		$group = UserGroup::get();
-		$data = [
-			'article' => $article,
-			'category' => $category,
-			'group' => $group,
-		];
-		return $this->success($data);
-	}
-
-	// 提交添加
-	public function edit(Request $req, $id) {
-		if (!$req->has(['category_id', 'title', 'thumb', 'description', 'content', 'permission'])) {
-			return $this->failed('信息录入不正确');
-		}
-
-		$permission = implode($req->input('permission'), ',');
-
-		$m = Article::find($id);
-		$m->category_id = $req->input('category_id');
-		$m->title = $req->input('title');
-		$m->thumb = $req->input('thumb');
-		$m->description = $req->input('description');
-		$m->content = $req->input('content');
-		$m->permission = $permission;
-		$res = $m->save();
-		if ($res) {
-			return $this->message('修改成功');
-		}
-
-		return $this->failed('修改失败');
-	}
-
-	public function delete($id) {
-		$res = Article::destroy($id);
-		if ($res) {
-			return $this->message('删除成功');
-		}
-
-		return $this->failed('删除失败');
 	}
 
 }

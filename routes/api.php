@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 	return $request->user();
 });
 
-Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
+Route::group(['namespace' => 'Admin', 'middleware' => ['auth:api', 'scope:admin']], function () {
 	// 分类
 	Route::get('/admin/category', 'CategoryController@index')->name('admin-category');
 	Route::post('/admin/category/add', 'CategoryController@add')->name('admin-category-add');
@@ -51,7 +51,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'auth:api'], function () {
 	Route::post('/admin/uploader', 'UploaderController@upload')->name('admin-uploader');
 });
 
-Route::group(['namespace' => 'Web'], function () {
+Route::group(['namespace' => 'Web', 'middleware' => ['auth:api', 'scope:weixin']], function () {
 	// 文章
 	Route::get('/article', 'ArticleController@index')->name('article'); // 列表
 	Route::get('/article/{id}', 'ArticleController@single')->name('article-single')->where('id', '[0-9]+'); // 详情页
@@ -63,6 +63,12 @@ Route::group(['namespace' => 'Web'], function () {
 	Route::post('/member/signup', 'MemberController@signup')->name('member-signup');
 
 	Route::post('/uploader', 'UploaderController@upload')->name('uploader');
+});
+
+Route::get('/test', function () {
+	$user = App\User::find(1);
+	$user = $user->createToken('Token Name', ['weixin'])->accessToken;
+	return $user;
 });
 
 Route::get('/login', function () {

@@ -29,5 +29,10 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes();
 
         Passport::enableImplicitGrant();
+
+        Passport::tokensCan([
+            'admin' => 'admin',
+            'weixin' => 'weixin',
+        ]);
     }
 }
