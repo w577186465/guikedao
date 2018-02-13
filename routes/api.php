@@ -70,3 +70,9 @@ Route::get('/login', function () {
 
 Route::get('/register', function () {
 })->name('register'); // 注册
+
+Route::get('/test', function () {
+	$user = session('wechat.oauth_user');
+	echo 'openid:' . $user['default']['original']['openid'];
+	print_r($user);
+});
