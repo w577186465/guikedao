@@ -73,6 +73,5 @@ Route::get('/register', function () {
 
 Route::get('/test', function () {
 	$user = session('wechat.oauth_user');
-	echo 'openid:' . $user['default']['original']['openid'];
-	print_r($user);
+	dd($user);
 });
