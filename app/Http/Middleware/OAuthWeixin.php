@@ -30,7 +30,7 @@ class OAuthWeixin {
 	public function handle($request, Closure $next) {
 		$user = session('wechat.oauth_user');
 
-        print_r($request->header('Authorization'));
+        dd($user);
 
 		if ($user) {
 			return $next($request);
