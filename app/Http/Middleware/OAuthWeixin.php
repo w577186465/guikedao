@@ -36,7 +36,7 @@ class OAuthWeixin {
 			return $next($request);
 		} else {
 			$res = array('msg' => '无权限');
-			return response($user, 401);
+			return response($user, 403);
 		}
 
 	}
