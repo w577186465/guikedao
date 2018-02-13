@@ -33,7 +33,9 @@ class OAuthWeixin {
 
         $Authorization = $user['default']['original']['openid'];
 
-        return [$Authorization, $request->header('Authorization')];
+        echo $Authorization;
+        echo '<br>';
+        echo $request->header('Authorization');
 
 		if ($user && $Authorization == $request->header('Authorization')) {
 			return $next($request);
