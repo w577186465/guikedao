@@ -31,6 +31,8 @@ class OAuthWeixin {
 		$user = session('wechat.oauth_user');
         $openid = $user['default']['original']['openid'];
 
+        dd($user);
+
         $Authorization = 'Bearer ' . $openid;
 
 		if ($user && $Authorization == $user['default']['original']['openid']) {
