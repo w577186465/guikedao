@@ -22,3 +22,8 @@ Route::group(['middleware' => ['wechat.oauth']], function () {
 });
 
 // Route::get('/login', 'Web\LoginController@login');
+
+Route::get('/test', function () {
+	$user = session('wechat.oauth_user');
+	print_r($user);
+});
