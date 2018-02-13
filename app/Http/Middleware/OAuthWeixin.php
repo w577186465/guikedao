@@ -31,13 +31,13 @@ class OAuthWeixin {
 		$user = session('wechat.oauth_user');
         $openid = $user['default']['original']['openid'];
 
-        $Authorization = 'Bearer ' . $openid;
+        $Authorization = $user['default']['original']['openid'];
 
-		if ($user && $Authorization == $user['default']['original']['openid']) {
+		if ($user && $Authorization == $request->header('Authorization')) {
 			return $next($request);
 		} else {
 			$res = array('msg' => '无权限');
-			return response($user, 401);
+			return response($res, 401);
 		}
 
 	}
