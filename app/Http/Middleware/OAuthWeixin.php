@@ -12,33 +12,30 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Event;
 use http\Env\Request;
 
 /**
  * Class OAuthAuthenticate.
  */
-class OAuthWeixin
-{
-    /**
-     * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
-     * @param string|null              $scopes
-     *
-     * @return mixed
-     */
-    public function handle($request, Closure $next)
-    {
-        $user = session('wechat.oauth_user');
-        if ($user) {
-            // return $next($request);
-        } else {
-            $res = array('msg' => '无权限');
-            return response($res, 401);
-        }
-        
-    }
+class OAuthWeixin {
+	/**
+	 * Handle an incoming request.
+	 *
+	 * @param \Illuminate\Http\Request $request
+	 * @param \Closure                 $next
+	 * @param string|null              $scopes
+	 *
+	 * @return mixed
+	 */
+	public function handle($request, Closure $next) {
+		$user = session('wechat.oauth_user');
+		if ($user) {
+			// return $next($request);
+		} else {
+			$res = array('msg' => '无权限');
+			return response($res, 403);
+		}
+
+	}
 
 }
