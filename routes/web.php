@@ -17,10 +17,15 @@ Route::get('/', function () {
 
 Route::any('/wechat', 'Web\WeChatController@serve');
 
-Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
-    Route::get('/user', function () {
+Route::group(['middleware' => ['wechat.oauth']], function () {
+    Route::get('/login', function () {
         $user = session('wechat.oauth_user'); // 拿到授权用户资料
-
-        dd($user);
+        $openid = $user['default']['original']['openid'];
+        ?>
+        	<script>
+        		window.localStorage.openid = '<?php echo $openid; ?>';
+        		window.location.href = '/#/sign/center';
+        	</script>
+        <?php
     });
 });

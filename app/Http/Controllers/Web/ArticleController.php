@@ -31,7 +31,8 @@ class ArticleController extends ApiController {
 			return $this->message('无权限，请登录。', 403);
 		}
 
-		$openid = $req->input('openid');
+		$user = session('wechat.oauth_user');
+		$openid = $user['default']['original']['openid'];
 		
 		$article = Article::find($id);
 
