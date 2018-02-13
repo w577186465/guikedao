@@ -29,9 +29,10 @@ class OAuthWeixin {
 	 */
 	public function handle($request, Closure $next) {
 		$user = session('wechat.oauth_user');
+		print_r($user);
 
 		if ($user) {
-			// return $next($request);
+			return $next($request);
 		} else {
 			$res = array('msg' => '无权限');
 			return response($user, 403);
