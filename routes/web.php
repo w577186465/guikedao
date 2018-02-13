@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Route::any('/wechat', 'Web\WeChatController@serve');
 
-Route::group(['middleware' => ['wechat.oauth']], function () {
+Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
 	Route::get('/login', 'Web\LoginController@login');
 });
 
@@ -25,6 +25,5 @@ Route::group(['middleware' => ['wechat.oauth']], function () {
 
 Route::get('/test', function () {
 	$user = session('wechat.oauth_user');
-	echo 'openid:' . $user['default']['original']['openid'];
-	print_r($user);
+	dd($user);
 });
