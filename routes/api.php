@@ -66,4 +66,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['weixin']], function () {
 });
 
 Route::get('/login', function () {
-})->name('login'); // 分类
+})->name('login'); // 登录
+
+Route::get('/register', function () {
+})->name('register'); // 注册
