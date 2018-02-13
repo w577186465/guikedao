@@ -17,7 +17,7 @@ class CreateMembersTable extends Migration {
 			$table->string('avatar')->default('');
 			$table->string('name')->index()->default('');
 			$table->integer('sex')->index()->default(0);
-			$table->bigInteger('tel')->unique()->default(0);
+			$table->bigInteger('tel')->index()->default(0);
 			$table->integer('province')->index()->default(0);
 			$table->integer('city')->index()->default(0);
 			$table->integer('region')->index()->default(0);
