@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Member;
 
 class LoginController extends Controller {
 
@@ -25,6 +24,6 @@ class LoginController extends Controller {
 			$m->save();
 		}
 
-		echo '<script>window.localStorage.openid = ' . $openid . ';window.location.href = "/#/sign/center";</script>';
+		echo '<script>window.localStorage.openid = "' . $openid . '";window.location.href = "/#/sign/center";</script>';
 	}
 }
