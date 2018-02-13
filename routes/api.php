@@ -71,7 +71,7 @@ Route::get('/login', function () {
 Route::get('/register', function () {
 })->name('register'); // 注册
 
-Route::get('/test', function () {
+Route::middleware('web')->get('/test', function () {
 	$user = session('wechat.oauth_user');
 	dd($user);
 });
