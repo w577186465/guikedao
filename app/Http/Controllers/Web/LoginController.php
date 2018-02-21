@@ -25,6 +25,6 @@ class LoginController extends Controller {
 			$m->save();
 		}
 
-		echo '<script>alert("' . $openid . '");window.localStorage.openid = "' . $openid . '";window.location.href = "/#/sign/center";</script>';
+		echo '<script>window.localStorage.openid = "' . $openid . '";window.location.href = "/#/sign/center";</script>';
 	}
 }
