@@ -37,6 +37,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth:api', 'scope:admin'
 	Route::get('/admin/member', 'UserController@index')->name('admin-member');
 	Route::get('/admin/member/list', 'UserController@list')->name('admin-member-list');
 	Route::get('/admin/member/examine', 'UserController@examine')->name('admin-member-examine');
+	Route::get('/admin/member/count', 'UserController@member_count')->name('admin-member-count'); // 会员统计
 
 	// 会员组
 	Route::get('/admin/member/group', 'UserGroupController@index')->name('admin-usergroup');
