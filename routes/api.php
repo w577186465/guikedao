@@ -73,9 +73,9 @@ Route::group(['namespace' => 'Web', 'middleware' => ['weixin']], function () {
 	Route::post('/uploader', 'UploaderController@upload')->name('uploader');
 });
 
-Route::group(['middleware' => ['wechat.oauth']], function () {
+Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
 	Route::get('/login', 'Web\LoginController@login');
-}); // 登录
+});
 
 Route::get('/register', function () {
 })->name('register'); // 注册
