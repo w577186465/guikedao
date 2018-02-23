@@ -74,6 +74,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['weixin']], function () {
 });
 
 Route::get('/login', function () {
+	Route::get('/login', 'Web\LoginController@login');
 })->name('login'); // 登录
 
 Route::get('/register', function () {
