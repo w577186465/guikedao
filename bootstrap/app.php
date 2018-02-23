@@ -41,8 +41,6 @@ $app->singleton(
 	App\Exceptions\Handler::class
 );
 
-$app->register(Overtrue\LaravelWeChat\ServiceProvider::class);
-
 /*
 |--------------------------------------------------------------------------
 | Return The Application
