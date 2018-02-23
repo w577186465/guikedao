@@ -18,6 +18,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['namespace' => 'Admin', 'middleware' => ['auth:api', 'scope:admin']], function () {
+	// 管理员
+	Route::post('/admin/user/change', 'UserController@user_change')->name('admin-user-change');
+
+	// 首页
+	Route::get('/admin/index', 'IndexController@index')->name('admin-index');
+
 	// 分类
 	Route::get('/admin/category', 'CategoryController@index')->name('admin-category');
 	Route::post('/admin/category/add', 'CategoryController@add')->name('admin-category-add');
@@ -38,6 +44,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth:api', 'scope:admin'
 	Route::get('/admin/member/list', 'UserController@list')->name('admin-member-list');
 	Route::get('/admin/member/examine', 'UserController@examine')->name('admin-member-examine');
 	Route::get('/admin/member/count', 'UserController@member_count')->name('admin-member-count'); // 会员统计
+	Route::get('/admin/member/shenhe_count', 'UserController@shenhe_count')->name('admin-member-shenhe_count'); // 未审核数量
 
 	// 会员组
 	Route::get('/admin/member/group', 'UserGroupController@index')->name('admin-usergroup');
@@ -52,7 +59,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth:api', 'scope:admin'
 	Route::post('/admin/uploader', 'UploaderController@upload')->name('admin-uploader');
 });
 
-Route::group(['namespace' => 'Web', 'middleware' => ['web', 'weixin']], function () {
+Route::group(['namespace' => 'Web', 'middleware' => ['weixin']], function () {
 	// 文章
 	Route::get('/article', 'ArticleController@index')->name('article'); // 列表
 	Route::get('/article/{id}', 'ArticleController@single')->name('article-single')->where('id', '[0-9]+'); // 详情页
@@ -71,7 +78,3 @@ Route::get('/login', function () {
 
 Route::get('/register', function () {
 })->name('register'); // 注册
-
-Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
-	Route::get('/login', 'Web\LoginController@login');
-});

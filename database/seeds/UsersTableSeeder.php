@@ -10,9 +10,9 @@ class UsersTableSeeder extends Seeder {
 	 */
 	public function run() {
 		DB::table('users')->insert([
-			'name' => str_random(10),
-			'email' => str_random(10) . '@qq.com',
-			'password' => bcrypt('secret'),
+			'name' => 'admin',
+			'email' => 'passwoo@163.com',
+			'password' => bcrypt('admin'),
 		]);
 	}
 }

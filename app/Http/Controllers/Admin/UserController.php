@@ -56,22 +56,44 @@ class UserController extends ApiController {
 		$city = $req->input('city');
 		$data = [];
 		$chuji = Member::where('city', $city)->where('status', 0)
-					->select(DB::raw('count(region) as user_count, status, region'))
-					->groupBy('region', 'status', 'region')
-					->get();
+			->select(DB::raw('count(region) as user_count, status, region'))
+			->groupBy('region', 'status', 'region')
+			->get();
 		$gaoji = Member::where('city', $city)->where('status', 1)
-					->select(DB::raw('count(region) as user_count, status, region'))
-					->groupBy('region', 'status', 'region')
-					->get();
+			->select(DB::raw('count(region) as user_count, status, region'))
+			->groupBy('region', 'status', 'region')
+			->get();
 
 		$data['count'] = Member::where('city', $city)
-							->where('status', '>', -1)
-							->where('status', '<', 2)
-							->count();
+			->where('status', '>', -1)
+			->where('status', '<', 2)
+			->count();
 		$data['chuji'] = $chuji;
 		$data['gaoji'] = $gaoji;
 
 		return $this->success($data);
+	}
+
+	public function shenhe_count() {
+		$count = Member::where('status', 2)->count();
+		return $this->success($count);
+	}
+
+	public function user_change(Request $req) {
+		$user = $req->user();
+		if (!$req->filled('username')) {
+			return $this->failed('账号不能为空');
+		}
+
+		$user->name = $req->input('username');
+		if ($req->filled('password')) {
+			$user->password = bcrypt($req->input('password'));
+		}
+
+		$res = $user->save();
+		if ($res) {
+			return $this->message('success');
+		}
 	}
 
 }
