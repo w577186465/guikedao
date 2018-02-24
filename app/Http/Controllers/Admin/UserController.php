@@ -55,20 +55,11 @@ class UserController extends ApiController {
 
 		$city = $req->input('city');
 		$data = [];
-		$chuji = Member::where('city', $city)->where('status', 0)
-			->select(DB::raw('count(region) as user_count, status, region'))
-			->groupBy('region', 'status', 'region')
-			->get();
 		$gaoji = Member::where('city', $city)->where('status', 1)
 			->select(DB::raw('count(region) as user_count, status, region'))
 			->groupBy('region', 'status', 'region')
 			->get();
 
-		$data['count'] = Member::where('city', $city)
-			->where('status', '>', -1)
-			->where('status', '<', 2)
-			->count();
-		$data['chuji'] = $chuji;
 		$data['gaoji'] = $gaoji;
 
 		return $this->success($data);

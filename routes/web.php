@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,10 +21,8 @@ Route::group(['middleware' => ['wechat.oauth']], function () {
 	Route::get('/login', 'Web\LoginController@login');
 });
 
-// Route::get('/login', 'Web\LoginController@login');
+Route::get('/login', function () {})->name('login');
 
-Route::get('/test', function () {
-	$user = session('wechat.oauth_user');
-	$user['default']['original']['openid'];
-	print_r($user);
+Route::get('/test', function (Request $request) {
+	return $request->url();
 });
