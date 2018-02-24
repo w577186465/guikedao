@@ -76,6 +76,9 @@ Route::group(['namespace' => 'Web', 'middleware' => ['web', 'weixin']], function
 Route::get('/register', function () {
 })->name('register'); // 注册
 
+Route::get('/sign-in', function () {
+})->name('login');
+
 Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
-	Route::get('/login', 'Web\LoginController@login')->name('login');
+	Route::get('/login', 'Web\LoginController@login')->name('weixin-login');
 });
