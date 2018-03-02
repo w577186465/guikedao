@@ -45,11 +45,11 @@ class UserController extends ApiController {
 			}
 		}
 
-		return $where;
-
 		if ($req->filled('apply_status')) {
 			$where['apply_status'] = $req->input('apply_status');
 		}
+
+		return $where;
 
 		$member = Member::with('group')->with('apply')->where($where)->paginate(10);
 		return $this->success($member);
