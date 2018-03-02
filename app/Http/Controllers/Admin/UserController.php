@@ -12,8 +12,15 @@ class UserController extends ApiController {
 
 	public function index(Request $req) {
 		$where = $req->only('province', 'city', 'region');
-		$where['status'] = $req->input('status', 1);
-		$member = Member::where($where)->paginate(10);
+		if ($req->filled('status')) {
+			$where['status'] = $req->input('status');
+		}
+
+		if ($req->filled('apply_status')) {
+			$where['apply_status'] = $req->input('apply_status');
+		}
+
+		$member = Member::with('group')->with('apply')->where($where)->paginate(10);
 		$group = UserGroup::get();
 		$data = [
 			'member' => $member,
@@ -24,23 +31,35 @@ class UserController extends ApiController {
 
 	public function list(Request $req) {
 		$where = $req->only('province', 'city', 'region');
-		$where['status'] = $req->input('status', 1);
-		$member = Member::where($where)->paginate(10);
+		if ($req->filled('status')) {
+			$where['status'] = $req->input('status');
+		}
+
+		if ($req->filled('apply_status')) {
+			$where['apply_status'] = $req->input('apply_status');
+		}
+
+		$member = Member::with('group')->with('apply')->where($where)->paginate(10);
 		return $this->success($member);
 	}
 
 	public function examine(Request $req) {
-		if (!$req->filled(['ids', 'ok'])) {
+		if (!$req->filled(['id', 'ok'])) {
 			return $this->failed('参数不正确');
 		}
-		$ids = $req->input('ids');
 
-		$status = -1;
-		if ($req->input('ok') == 'true') {
-			$status = 1;
+		$id = $req->input('id');
+		$m = Member::find($id);
+		if ($req->input('ok') != 'true') {
+			$m->apply_status = -1;
+			$m->save();
+			return $this->message('操作成功');
 		}
 
-		$res = Member::whereIn('id', $ids)->update(['status' => $status]);
+		$m->status = $m->apply_id;
+		$m->apply_status = 1;
+		$res = $m->save();
+
 		if ($res) {
 			return $this->message('操作成功');
 		}
@@ -55,7 +74,14 @@ class UserController extends ApiController {
 
 		$city = $req->input('city');
 		$data = [];
-		$gaoji = Member::where('city', $city)->where('status', 1)
+		$chuji = Member::where('city', $city)->where('status', 1)
+			->select(DB::raw('count(region) as user_count, status, region'))
+			->groupBy('region', 'status', 'region')
+			->get();
+
+		$data['chuji'] = $chuji;
+
+		$gaoji = Member::where('city', $city)->where('status', 2)
 			->select(DB::raw('count(region) as user_count, status, region'))
 			->groupBy('region', 'status', 'region')
 			->get();

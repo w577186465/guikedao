@@ -9,9 +9,10 @@ use Illuminate\Http\Request;
 class MemberController extends ApiController {
 
 	public function item($openid) {
-		$member = Member::where('openid', $openid)->first();
+		$member = Member::with('group')->where('openid', $openid)->first();
 		if (!isset($member->id)) {
-			return $this->failed('会员不存在');
+			$res = array('msg' => '无权限');
+			return response($res, 401);
 		}
 		return $this->success($member);
 	}
@@ -30,19 +31,29 @@ class MemberController extends ApiController {
 		$member = [];
 		$member['avatar'] = $req->input('avatar');
 		$member['tel'] = $req->input('tel');
-		$member['province'] = $req->input('province');
-		$member['city'] = $req->input('city');
-		$member['region'] = $req->input('region');
+		if ($req->filled(['province', 'city', 'region'])) {
+			$member['province'] = $req->input('province');
+			$member['city'] = $req->input('city');
+			$member['region'] = $req->input('region');
+		}
 		$member['regiondesc'] = $req->input('regiondesc');
 		$member['adress'] = $req->input('adress');
 
+		if ($req->filled('apply_id')) {
+			$member['apply_id'] = $req->input('apply_id');
+			$member['apply_status'] = 0;
+		}
+
 		$get = Member::where('openid', $openid)->first();
-		
-		if ($get->status != 1) {
+
+		if ($get->apply_status < 0) {
+			$member['apply_status'] = 0;
+		}
+
+		if ($get->status < 1) {
 			$member['sex'] = $req->input('sex');
 			$member['name'] = $req->input('name');
 			$member['certnumber'] = $req->input('certnumber');
-			$member['status'] = 2;
 		}
 
 		$res = Member::where('openid', $openid)->update($member);

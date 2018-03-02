@@ -4,21 +4,22 @@ namespace App\Http\Controllers\Web;
 
 use App\Article;
 use App\Category;
-use App\UserGroup;
-use App\Member;
 use App\Http\Controllers\ApiController;
+use App\Member;
+use App\UserGroup;
 use Illuminate\Http\Request;
 
 class ArticleController extends ApiController {
 
 	public function index(Request $req) {
 		$catid = $req->input('catid', false);
+		$pagesize = $req->input("pagesize", 10);
 
 		$where = [];
 		if ($catid) {
 			$where['category_id'] = $catid;
 		}
-		$article = Article::where($where)->orderBy('updated_at', 'desc')->paginate(10);
+		$article = Article::where($where)->orderBy('updated_at', 'desc')->paginate($pagesize);
 		$data = [
 			'article' => $article,
 		];
@@ -33,27 +34,28 @@ class ArticleController extends ApiController {
 
 		$user = session('wechat.oauth_user');
 		$openid = $user['default']['original']['openid'];
-		
+
 		$article = Article::find($id);
 
 		// 判断文章是否允许初级会员访问
 		$allow = false;
 		$permissions = explode(',', $article->permission);
+
+		$min = 0; // 计算最小权限
 		foreach ($permissions as $key => $value) {
-			if ($value == 1) {
-				$allow = true;
-				break;
+			if ($min == 0 || $value < $min) {
+				$min = $value;
 			}
 		}
 
 		$user = Member::where('openid', $openid)->first();
-		if ($user->status != 1 && !$allow) {
-			return $this->message('无权限，请申请未高级会员', 401);
+		if ($user->status < $min && $permissions != '') {
+			return $this->message('无权限，请申请为高级会员', 401);
 		}
 
 		$article->view = $article->view + 1;
 
-		if ($user->status == 1) {
+		if ($user->status > 1) {
 			$article->gview = $article->gview + 1;
 		}
 		$article->save();
@@ -61,8 +63,9 @@ class ArticleController extends ApiController {
 		return $this->success($article);
 	}
 
-	public function list() {
-		$article = Article::orderBy('updated_at', 'desc')->paginate(10);
+	public function list(Request $req) {
+		$pagesize = $req->input("pagesize", 10);
+		$article = Article::orderBy('updated_at', 'desc')->paginate($pagesize);
 		return $this->success($article);
 	}
 
