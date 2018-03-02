@@ -45,6 +45,8 @@ class UserController extends ApiController {
 			}
 		}
 
+		return $where;
+
 		if ($req->filled('apply_status')) {
 			$where['apply_status'] = $req->input('apply_status');
 		}
