@@ -14,6 +14,8 @@ class UserController extends ApiController {
 		$where = $req->only('province', 'city', 'region');
 		if ($req->filled('status')) {
 			$where['status'] = $req->input('status');
+		} else {
+			$where[] = ['status', '>', 0];
 		}
 
 		if ($req->filled('apply_status')) {
@@ -33,6 +35,8 @@ class UserController extends ApiController {
 		$where = $req->only('province', 'city', 'region');
 		if ($req->filled('status')) {
 			$where['status'] = $req->input('status');
+		} else {
+			$where[] = ['status', '>', 0];
 		}
 
 		if ($req->filled('apply_status')) {
