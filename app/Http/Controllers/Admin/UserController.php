@@ -12,6 +12,7 @@ class UserController extends ApiController {
 
 	public function index(Request $req) {
 		$where = $req->only('province', 'city', 'region');
+		$status = $req->input('status');
 		if ($req->filled('status')) {
 			$where['status'] = $req->input('status');
 		} elseif ($status == 'member') {
@@ -33,7 +34,7 @@ class UserController extends ApiController {
 
 	public function list(Request $req) {
 		$where = $req->only('province', 'city', 'region');
-		$status = $req->input('status')
+		$status = $req->input('status');
 		if ($req->filled('status')) {
 			$where['status'] = $status;
 		} elseif ($status == 'member') {
