@@ -45,6 +45,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth:api', 'scope:admin'
 	Route::get('/admin/member/examine', 'UserController@examine')->name('admin-member-examine');
 	Route::get('/admin/member/count', 'UserController@member_count')->name('admin-member-count'); // 会员统计
 	Route::get('/admin/member/shenhe_count', 'UserController@shenhe_count')->name('admin-member-shenhe_count'); // 未审核数量
+	Route::post('/admin/member/edit/{id}', 'MemberController@edit')->name('admin-member-edit');
 
 	// 会员组
 	Route::get('/admin/member/group', 'UserGroupController@index')->name('admin-usergroup');
