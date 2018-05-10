@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserGroup extends Model {
-	public $timestamps = false;
+class OrderWuliu extends Model
+{
+    //
 }

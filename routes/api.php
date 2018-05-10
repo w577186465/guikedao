@@ -17,61 +17,80 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 	return $request->user();
 });
 
-Route::group(['namespace' => 'Admin', 'middleware' => ['auth:api', 'scope:admin']], function () {
-	// 管理员
-	Route::post('/admin/user/change', 'UserController@user_change')->name('admin-user-change');
-
+// 后台
+Route::group(['middleware' => ['auth:api', 'scope:admin']], function () {
 	// 首页
-	Route::get('/admin/index', 'IndexController@index')->name('admin-index');
-
-	// 分类
-	Route::get('/admin/category', 'CategoryController@index')->name('admin-category');
-	Route::post('/admin/category/add', 'CategoryController@add')->name('admin-category-add');
-	Route::post('/admin/category/edit', 'CategoryController@edit')->name('admin-category-edit');
-	Route::get('/admin/category/delete/{id}', 'CategoryController@delete')->name('admin-category-delete');
-
-	// 文章
-	Route::get('/admin/article', 'ArticleController@index')->name('admin-article');
-	Route::get('/admin/article/list', 'ArticleController@list')->name('admin-article-list');
-	Route::get('/admin/article/add', 'ArticleController@add_data')->name('admin-article-add-data'); // 获取添加页面数据
-	Route::get('/admin/article/edit/{id}', 'ArticleController@edit_data')->name('admin-article-edit-data'); // 获取修改页面数据
-	Route::post('/admin/article/add', 'ArticleController@add')->name('admin-article-add'); // 提交添加
-	Route::post('/admin/article/edit/{id}', 'ArticleController@edit')->name('admin-article-edit'); // 提交修改
-	Route::get('/admin/article/delete/{id}', 'ArticleController@delete')->name('admin-article-delete');
+	Route::group(['namespace' => 'User'], function () {
+		Route::get('/admin/index', 'IndexController@index')->name('admin-index');
+	});
 
 	// 会员
-	Route::get('/admin/member', 'UserController@index')->name('admin-member');
-	Route::get('/admin/member/list', 'UserController@list')->name('admin-member-list');
-	Route::get('/admin/member/examine', 'UserController@examine')->name('admin-member-examine');
-	Route::get('/admin/member/count', 'UserController@member_count')->name('admin-member-count'); // 会员统计
-	Route::get('/admin/member/shenhe_count', 'UserController@shenhe_count')->name('admin-member-shenhe_count'); // 未审核数量
-	Route::post('/admin/member/edit/{id}', 'MemberController@edit')->name('admin-member-edit');
+	Route::group(['namespace' => 'User'], function () {
+		// 管理员
+		Route::post('/admin/user/change', 'UserController@user_change')->name('admin-user-change'); // 改改管理员信息
 
-	// 会员组
-	Route::get('/admin/member/group', 'UserGroupController@index')->name('admin-usergroup');
-	Route::post('/admin/member/group/add', 'UserGroupController@add')->name('admin-usergroup-add');
-	Route::post('/admin/member/group/edit', 'UserGroupController@edit')->name('admin-usergroup-edit');
-	Route::get('/admin/member/group/delete/{id}', 'UserGroupController@delete')->name('admin-usergroup-delete');
+		// 会员
+		Route::get('/admin/member', 'UserController@index')->name('admin-member');
+		Route::get('/admin/member/list', 'MemberController@list')->name('admin-member-list');
+		Route::post('/admin/member/edit/{id}', 'MemberController@edit')->name('admin-member-edit');
+	});
 
-	// 七牛上传
-	Route::post('/admin/qiniu/upload_token', 'QiniuController@index')->name('admin-qiniu-uploadtoken');
+	// 卡券
+	Route::group(['namespace' => 'Quan'], function () {
+		Route::post('/admin/quan/add', 'IndexController@add')->name('admin-quan-add'); // 新增卡券
+		Route::post('/admin/quan/edit/{id}', 'IndexController@edit')->name('admin-quan-edit'); // 修改卡券
+		Route::get('/admin/quan/list', 'IndexController@list')->name('admin-quan-list'); // 卡券列表 分页
+		Route::get('/admin/quan/all', 'IndexController@all')->name('admin-quan-all'); // 卡券列表 所有
 
-	// 本地上传
-	Route::post('/admin/uploader', 'UploaderController@upload')->name('admin-uploader');
+		Route::post('/admin/user_quan/add', 'UserController@add')->name('admin-quan-add'); // 赠送卡券
+		// Route::post('/admin/user_quan/edit/{id}', 'UserController@edit')->name('admin-quan-edit'); // 修改卡券
+		Route::get('/admin/user_quan/all/{id}', 'UserController@all')->name('admin-quan-all'); // 卡券列表 全部
+	});
+
+	// 订单
+	Route::group(['namespace' => 'Order'], function () {
+		Route::get('/admin/order/list', 'OrderController@list')->name('admin-order-list');
+		Route::get('/admin/order/send_out/{id}', 'OrderController@send_out')->name('admin-order-sendout'); // 到店发货
+		Route::post('/admin/order/express_send_out/{id}', 'OrderController@express_send_out')->name('admin-order-express-sendout'); // 到店发货
+	});
+
+	// 文件上传
+	Route::group(['namespace' => 'Uploader'], function () {
+		// 七牛上传
+		Route::post('/admin/qiniu/upload_token', 'QiniuController@index')->name('admin-qiniu-uploadtoken');
+
+		// 本地上传
+		Route::post('/admin/uploader', 'UploaderController@upload')->name('admin-uploader');
+	});
 });
 
-Route::group(['namespace' => 'Web', 'middleware' => ['web', 'weixin']], function () {
-	// 文章
-	Route::get('/article', 'ArticleController@index')->name('article'); // 列表
-	Route::get('/article/{id}', 'ArticleController@single')->name('article-single')->where('id', '[0-9]+'); // 详情页
-	Route::get('/article/category', 'ArticleController@category')->name('article-category'); // 文章分类
+// 微信登录可访问
+Route::group(['middleware' => ['web', 'weixin']], function () {
+	Route::group(['namespace' => 'Quan'], function () {
+		Route::get('/my_quan/all', 'MemberController@all')->name('admin-quan-all'); // 卡券列表 全部
+		// Route::post('/my_quan/send', 'MemberController@send')->name('admin-quan-send'); // 卡券列表 全部
+		Route::post('/gift/produce', 'GiftController@produce')->name('gift-produce'); // 生成礼包
+		Route::get('/gift/{id}', 'GiftController@gift')->where(['id' => '[0-9]+'])->name('gift-info'); // 获取礼包信息
+		Route::get('/gift/coding/{coding}', 'GiftController@gift_bycoding')->name('gift-info-bycoding'); // 通过单号获取
+		Route::get('/gift/receive/{coding}', 'GiftController@receive')->name('gift-bycoding'); // 领取礼包
+		Route::get('/gift/list', 'GiftController@list')->name('my-gift-list'); // 领取礼包
+	});
 
-	// 会员
-	Route::get('/member/{openid}', 'MemberController@item')->name('member-item');
-	Route::post('/member/add', 'MemberController@add')->name('member-add');
-	Route::post('/member/signup', 'MemberController@signup')->name('member-signup');
+	Route::group(['namespace' => 'Order'], function () {
+		Route::get('/order/adress', 'OrderController@address')->name('admin-quan-all');
+		Route::post('/order/add_order', 'OrderController@add_order')->name('add-order'); // 用户提交订单
+		Route::get('/order/myorder', 'OrderController@myorder')->name('my-order'); // 用户订单记录
+		Route::get('/order/confirm/{id}', 'OrderController@confirm')->name('admin-order-confirm');
+	});
 
-	Route::post('/uploader', 'UploaderController@upload')->name('uploader');
+	Route::group(['namespace' => 'Weixin'], function () {
+		Route::post('/weixin/jssdk_config', 'CommonController@jssdk_config')->name('weixin-jssdk-config');
+	});
+});
+
+Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
+	Route::get('/member/register', 'User\MemberController@register')->name('member-register'); // 注册
+	Route::get('/member/login', 'User\MemberController@login')->name('member-login');
 });
 
 Route::get('/register', function () {
@@ -79,7 +98,3 @@ Route::get('/register', function () {
 
 Route::get('/sign-in', function () {
 })->name('login');
-
-Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
-	Route::get('/login', 'Web\LoginController@login')->name('weixin-login');
-});

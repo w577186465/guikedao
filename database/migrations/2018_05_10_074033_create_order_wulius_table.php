@@ -4,16 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddVotesToMembersTable extends Migration {
+class CreateOrderWuliusTable extends Migration {
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
 	public function up() {
-		Schema::table('members', function (Blueprint $table) {
-			$table->integer("apply_id")->default(0);
-			$table->integer("apply_status")->default(0);
+		Schema::create('order_wulius', function (Blueprint $table) {
+			$table->increments('id');
+			$table->integer('order_id')->index();
+			$table->string('company');
+			$table->string('coding');
+			$table->timestamps();
 		});
 	}
 
@@ -23,8 +26,6 @@ class AddVotesToMembersTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::table('members', function (Blueprint $table) {
-			$table->dropColumn(['apply_id', 'apply_status']);
-		});
+		Schema::dropIfExists('order_wulius');
 	}
 }

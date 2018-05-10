@@ -11,6 +11,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Member;
 use Closure;
 use http\Env\Request;
 
@@ -29,17 +30,17 @@ class OAuthWeixin {
 	 */
 	public function handle($request, Closure $next) {
 		$user = session('wechat.oauth_user');
-		$openid = $user['default']['original']['openid'];
-
-		$Authorization = 'Bearer ' . $user['default']['original']['openid'];
-
-		if ($user && $Authorization == $request->header('Authorization')) {
-			return $next($request);
-		} else {
+		if (!isset($user['default']['id'])) {
 			$res = array('msg' => '无权限');
 			return response($res, 401);
 		}
 
+		$openid = $user['default']['id'];
+		$Authorization = 'Bearer ' . $openid;
+
+		$request->weixin = $user;
+		$request->member = Member::where('openid', $openid)->first();
+		return $next($request);
 	}
 
 }

@@ -4,18 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCategoriesTable extends Migration {
+class CreateGiftsTable extends Migration {
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('categories', function (Blueprint $table) {
+		Schema::create('gifts', function (Blueprint $table) {
 			$table->increments('id');
-			$table->string('name');
-			$table->string('alias')->index();
-			$table->integer('pid')->index();
+			$table->integer('member_id')->index();
+			$table->string('coding')->index();
+			$table->integer('receiver')->nullable();
+			$table->integer('status')->default(0);
+			$table->timestamps();
 		});
 	}
 
@@ -25,6 +27,6 @@ class CreateCategoriesTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::dropIfExists('categories');
+		Schema::dropIfExists('gifts');
 	}
 }

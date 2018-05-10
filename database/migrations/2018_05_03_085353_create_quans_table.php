@@ -4,21 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateArticlesTable extends Migration {
+class CreateQuansTable extends Migration {
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('articles', function (Blueprint $table) {
+		Schema::create('quans', function (Blueprint $table) {
 			$table->increments('id');
-			$table->integer('category_id')->index();
-			$table->string('title')->index();
-			$table->string('thumb');
-			$table->string('description');
-			$table->mediumText('content');
-			$table->string('permission')->index();
+			$table->string('name')->unique();
+			$table->integer('money')->unique();
 			$table->timestamps();
 		});
 	}
@@ -29,6 +25,6 @@ class CreateArticlesTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::dropIfExists('articles');
+		Schema::dropIfExists('quans');
 	}
 }

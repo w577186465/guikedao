@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,14 +14,10 @@ Route::get('/', function () {
 	return view('welcome');
 });
 
+Route::group([], function () {
+	Route::group(['namespace' => 'Quan'], function () {
+		Route::get('/quan/share', 'MemberController@share')->name('quan/share');
+	});
+});
+
 Route::any('/wechat', 'Web\WeChatController@serve');
-
-Route::group(['middleware' => ['wechat.oauth']], function () {
-	Route::get('/login', 'Web\LoginController@login');
-});
-
-Route::get('/login', function () {})->name('login');
-
-Route::get('/test', function (Request $request) {
-	return $request->url();
-});
