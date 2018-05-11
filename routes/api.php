@@ -96,5 +96,9 @@ Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
 Route::get('/register', function () {
 })->name('register'); // 注册
 
+Route::get('/test', function (Request $request) {
+	print_r($request->fullUrl());
+})->name('test'); // 注册
+
 Route::get('/sign-in', function () {
 })->name('login');
