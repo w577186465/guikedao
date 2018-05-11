@@ -81,6 +81,13 @@ Route::group(['middleware' => ['web', 'weixin']], function () {
 		Route::post('/order/add_order', 'OrderController@add_order')->name('add-order'); // 用户提交订单
 		Route::get('/order/myorder', 'OrderController@myorder')->name('my-order'); // 用户订单记录
 		Route::get('/order/confirm/{id}', 'OrderController@confirm')->name('admin-order-confirm');
+
+		// 收货地址
+		Route::post('/address/add', 'AddressController@add')->name('address-add');
+		Route::post('/address/edit/{id}', 'AddressController@edit')->name('address-edit');
+		Route::get('/address/destroy/{id}', 'AddressController@destroy')->name('address-destroy');
+		Route::get('/address/info/{id}', 'AddressController@address')->name('address');
+		Route::get('/address/myaddress', 'AddressController@myaddress')->name('myaddress');
 	});
 
 	Route::group(['namespace' => 'Weixin'], function () {

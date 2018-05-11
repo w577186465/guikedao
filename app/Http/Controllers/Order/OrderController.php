@@ -24,6 +24,10 @@ class OrderController extends ApiController {
 			return $this->failed('卡券不正确');
 		}
 
+		if (empty($quans)) {
+			return $this->failed('卡券不正确');
+		}
+
 		// 检查卡券数量是否足够
 		if (!$this->quan_num_true($quans, $mid)) {
 			return $this->failed('卡券不足');
