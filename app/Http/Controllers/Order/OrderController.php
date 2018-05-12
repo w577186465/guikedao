@@ -102,7 +102,7 @@ class OrderController extends ApiController {
 
 		$reset = [];
 		foreach ($get as $key => $value) {
-			$reset[$value['id']] = $value;
+			$reset[$value['quan_id']] = $value;
 		}
 
 		foreach ($quans as $key => $value) {
