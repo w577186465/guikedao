@@ -95,7 +95,7 @@ class OrderController extends ApiController {
 		/*
 			where user_id 只获取该会员的卡券 防止使用其他人的卡券
 		*/
-		$get = MyQuan::where('user_id', $mid)->whereIn('id', $quanIds)->get()->toArray();
+		$get = MyQuan::where('user_id', $mid)->whereIn('quan_id', $quanIds)->get()->toArray();
 		if (empty($get)) {
 			return false;
 		}
