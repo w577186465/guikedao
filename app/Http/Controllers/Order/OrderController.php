@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Quan\QuanService;
 use App\Member;
-use App\MyQuan;
 use App\Order;
 use App\OrderQuan;
 use App\OrderWuliu;
@@ -28,19 +28,15 @@ class OrderController extends ApiController {
 			return $this->failed('卡券不正确');
 		}
 
-		// 检查卡券数量是否足够
-		if (!$this->quan_num_true($quans, $mid)) {
-			return $this->failed('卡券不足');
-		}
-
-		$types = ['express', 'custom'];
-		$type = $req->input('order_type');
-		if (!in_array($type, $types)) {
-			return $this->failed('订单类型不存在！');
+		// 减少卡券
+		$res = QuanService::minus($mid, $quans);
+		if ($res['status'] == 'error') {
+			return $this->failed($res['message']);
 		}
 
 		$coding = date('YmdHis') . rand(1000, 9999);
 
+		// 保存订单
 		$order = new Order;
 		if ($type == 'express') {
 			if (!$req->filled("adress")) {
@@ -48,6 +44,9 @@ class OrderController extends ApiController {
 			}
 
 			$order->adress = $req->input('adress');
+		} elseif ($type == 'custom') {
+		} else {
+			return $this->failed('订单类型不存在！');
 		}
 
 		$order->member_id = $req->member->id;
@@ -66,52 +65,7 @@ class OrderController extends ApiController {
 			$orderQuan->save();
 		}
 
-		$this->quan_minus($quans, $req->member->id); // 订单成功减少卡券数量
-
 		return $this->message('success');
-	}
-
-	// 减券
-	private function quan_minus($quans, $mid) {
-		foreach ($quans as $key => $value) {
-			$quan = MyQuan::find($value['id']);
-			if ($quan->num <= 0) {
-				continue;
-			}
-			$quan->num = $quan->num - 1;
-			$quan->save();
-		}
-	}
-
-	private function quan_num_true($quans, $mid) {
-		$quanIds = [];
-		foreach ($quans as $key => $value) {
-			if ($value['num'] == 0) {
-				continue;
-			}
-			$quanIds[] = $value['id'];
-		}
-
-		/*
-			where user_id 只获取该会员的卡券 防止使用其他人的卡券
-		*/
-		$get = MyQuan::where('user_id', $mid)->whereIn('quan_id', $quanIds)->get()->toArray();
-		if (empty($get)) {
-			return false;
-		}
-
-		$reset = [];
-		foreach ($get as $key => $value) {
-			$reset[$value['quan_id']] = $value;
-		}
-
-		foreach ($quans as $key => $value) {
-			if ($reset[$value['id']]['num'] < $value['num']) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	public function myorder(Request $req) {

@@ -10,8 +10,12 @@
           if (message.status === 'success') {
             window.localStorage.openid = message.openid
             window.location.href = '/#/quan'
+          } else if (message.status === 'error') {
+            alert(message.message)
+            window.location.href = '/#/register'
           } else {
             alert('注册失败，请重试。')
+            window.location.href = '/#/register'
           }
         }()
       </script>

@@ -10,17 +10,26 @@ class MemberController extends ApiController {
 
 	// 注册会员
 	public function register(Request $req) {
+		$message = ['type' => 'register']; // 返回json
 		if (!$req->filled('name', 'tel')) {
-			return $this->failed("参数不正确");
+			$message['status'] = 'error';
+			$message['message'] = '参数不正确';
+			$values = [
+				'message' => $message,
+			];
+			return view('member_register', $values);
 		}
 
 		$tel = $req->input('tel');
 		$hasTel = Member::where('tel', $tel)->first();
 		if (!is_null($hasTel)) {
-			return $this->failed('手机号码已存在');
+			$message['status'] = 'error';
+			$message['message'] = '手机号码已存在';
+			$values = [
+				'message' => $message,
+			];
+			return view('member_register', $values);
 		}
-
-		$message = ['type' => 'register']; // 返回json
 
 		$user = session('wechat.oauth_user');
 		$openid = $user['default']['original']['openid'];
