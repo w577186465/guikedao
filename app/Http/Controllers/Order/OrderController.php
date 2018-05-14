@@ -44,7 +44,7 @@ class OrderController extends ApiController {
 		$order = new Order;
 		if ($type == 'express') {
 			if (!$req->filled("adress")) {
-				return $this->failed('快递地址不能为空');
+				return $this->failed('请选择收货地址');
 			}
 
 			$order->adress = $req->input('adress');

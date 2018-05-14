@@ -53,10 +53,13 @@ class GiftController extends ApiController {
 		$gift = Gift::with('quans')->where('coding', $coding)->first();
 		$quans = $gift->quans;
 		$mid = $req->member->id;
-		if ($gift->status == 1) {
+		$status = $gift->status;
+
+		if ($status == 1) {
 			$msg = '已经被人领走了...';
 			if ($gift->receiver == $mid) {
-				$msg = '你已经领过了哦';
+				return $gift;
+				$msg = '你已经领过了哦~';
 			}
 			return $this->failed($msg);
 		} elseif ($gift->status == 2) {
@@ -103,8 +106,8 @@ class GiftController extends ApiController {
 
 		$now = Carbon::now();
 		if ($gift->created_at->diffInDays($now) > 0) {
-			Gift::where('coding', $coding)->update(['status' => 1]);
-			return $this->failed('该礼包超过24小时未领取，已失效。');
+			Gift::where('coding', $coding)->update(['status' => 2]);
+			return $this->failed('礼包已过期。');
 		}
 
 		return Gift::with('quans')->where('coding', $coding)->first();

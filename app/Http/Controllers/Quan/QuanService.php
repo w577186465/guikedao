@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class QuanService {
 
 	/*
-		    $quans 格式 [[quan_id => ,]]
+		        $quans 格式 [[quan_id => ,]]
 	*/
 
 	static $my_quans;
@@ -72,7 +72,7 @@ class QuanService {
 				}
 				$quan = new MyQuan;
 				$quan->user_id = $mid;
-				$quan->quan_id = $id;
+				$quan->quan_id = $value['quan_id'];
 				$quan->num = $value['num'];
 				$res = $quan->save();
 			}
