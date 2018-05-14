@@ -111,10 +111,7 @@ class GiftController extends ApiController {
 		}
 
 		$info = Gift::with('quans')->where('coding', $coding)->first();
-		$info->my = false;
-		if ($mid == $info->member_id) {
-			$info->my = true;
-		}
+		$info->my = $req->member->id == $info->member_id;
 
 		return $info;
 	}
