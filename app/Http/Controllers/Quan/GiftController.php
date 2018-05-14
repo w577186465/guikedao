@@ -110,7 +110,13 @@ class GiftController extends ApiController {
 			return $this->failed('礼包已过期。');
 		}
 
-		return Gift::with('quans')->where('coding', $coding)->first();
+		$info = Gift::with('quans')->where('coding', $coding)->first();
+		$info->my = false;
+		if ($mid == $info->member_id) {
+			$info->my = true;
+		}
+
+		return $info;
 	}
 
 	public function list(Request $req) {
