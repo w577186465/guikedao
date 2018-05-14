@@ -37,6 +37,7 @@ class OrderController extends ApiController {
 		$coding = date('YmdHis') . rand(1000, 9999);
 
 		// 保存订单
+		$type = $req->input('order_type');
 		$order = new Order;
 		if ($type == 'express') {
 			if (!$req->filled("adress")) {
@@ -60,7 +61,7 @@ class OrderController extends ApiController {
 			$orderQuan = new OrderQuan;
 			$orderQuan->name = $value['name'];
 			$orderQuan->order_id = $order->id;
-			$orderQuan->quan_id = $value['id'];
+			$orderQuan->quan_id = $value['quan_id'];
 			$orderQuan->num = $value['num'];
 			$orderQuan->save();
 		}
