@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth:api', 'scope:admin']], function () {
 	// 订单
 	Route::group(['namespace' => 'Order'], function () {
 		Route::get('/admin/order/list', 'OrderController@list')->name('admin-order-list');
+		Route::get('/admin/order/address/{id}', 'OrderController@address')->name('admin-order-wuliu'); // 到店发货
 		Route::get('/admin/order/send_out/{id}', 'OrderController@send_out')->name('admin-order-sendout'); // 到店发货
 		Route::post('/admin/order/express_send_out/{id}', 'OrderController@express_send_out')->name('admin-order-express-sendout'); // 到店发货
 	});
@@ -77,7 +78,7 @@ Route::group(['middleware' => ['web', 'weixin']], function () {
 	});
 
 	Route::group(['namespace' => 'Order'], function () {
-		Route::get('/order/adress', 'OrderController@address')->name('admin-quan-all');
+		// Route::get('/order/adress', 'OrderController@address')->name('admin-quan-all');
 		Route::post('/order/add_order', 'OrderController@add_order')->name('add-order'); // 用户提交订单
 		Route::get('/order/myorder', 'OrderController@myorder')->name('my-order'); // 用户订单记录
 		Route::get('/order/confirm/{id}', 'OrderController@confirm')->name('admin-order-confirm');

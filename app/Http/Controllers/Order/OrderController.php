@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Address;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Quan\QuanService;
 use App\Member;
@@ -97,6 +98,12 @@ class OrderController extends ApiController {
 
 		return $this->failed('发生未知错误，操作失败。');
 	}
+
+	// 获取订单收货地址
+	public function address($id) {
+		return Address::find($id);
+	}
+
 	// 发货
 	public function send_out(Request $req, $id) {
 		return $this->set_order_status($id, 2);
@@ -129,13 +136,13 @@ class OrderController extends ApiController {
 		return $this->failed('发生未知错误，操作失败。');
 	}
 
-	public function address(Request $req) {
-		$app = app('wechat.official_account');
-		$config = $app->jssdk->buildConfig(array('onMenuShareAppMessage'), false);
-		$values = [
-			'config' => $config,
-		];
-		return view('share', $values);
-	}
+	// public function address(Request $req) {
+	// 	$app = app('wechat.official_account');
+	// 	$config = $app->jssdk->buildConfig(array('onMenuShareAppMessage'), false);
+	// 	$values = [
+	// 		'config' => $config,
+	// 	];
+	// 	return view('share', $values);
+	// }
 
 }

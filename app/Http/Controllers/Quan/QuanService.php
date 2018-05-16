@@ -32,6 +32,9 @@ class QuanService {
 		// 获取目标卡券ids
 		$quanIds = [];
 		foreach ($quans as $key => $value) {
+			if (!isset($value['quan_id']) || !isset($value['num'])) {
+				return self::failed('卡券不合法');
+			}
 			$quanIds[] = $value['quan_id'];
 		}
 
