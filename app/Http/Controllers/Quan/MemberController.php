@@ -18,7 +18,7 @@ class MemberController extends ApiController {
 
 	public function share() {
 		$app = app('wechat.official_account');
-		// $app->setUrl('http://zunyu.weixin.dlwanglong.com');
+		$app->setUrl('http://zunyu.weixin.dlwanglong.com');
 		$config = $app->jssdk->buildConfig(array('onMenuShareAppMessage'), false);
 		$values = [
 			'config' => $config,

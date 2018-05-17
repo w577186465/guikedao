@@ -31,7 +31,7 @@ class OAuthWeixin {
 	public function handle($request, Closure $next) {
 		$user = session('wechat.oauth_user');
 		if (!isset($user['default']['id'])) {
-			$res = array('msg' => '无权限');
+			$res = array('msg' => 'Unauthorized access');
 			return response($res, 401);
 		}
 
@@ -40,6 +40,9 @@ class OAuthWeixin {
 
 		$request->weixin = $user;
 		$request->member = Member::where('openid', $openid)->first();
+		if (is_null($request->member)) {
+			return response(['msg' => 'Unauthorized access'], 401);
+		}
 		return $next($request);
 	}
 
