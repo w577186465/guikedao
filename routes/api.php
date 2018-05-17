@@ -81,7 +81,8 @@ Route::group(['middleware' => ['web', 'weixin']], function () {
 		// Route::get('/order/adress', 'OrderController@address')->name('admin-quan-all');
 		Route::post('/order/add_order', 'OrderController@add_order')->name('add-order'); // 用户提交订单
 		Route::get('/order/myorder', 'OrderController@myorder')->name('my-order'); // 用户订单记录
-		Route::get('/order/confirm/{id}', 'OrderController@confirm')->name('admin-order-confirm');
+		Route::get('/order/confirm/{id}', 'OrderController@confirm')->name('order-confirm');
+		Route::get('/order/cancel/{id}', 'OrderController@cancel')->name('order-cancel'); // 取消订单
 
 		// 收货地址
 		Route::post('/address/add', 'AddressController@add')->name('address-add');

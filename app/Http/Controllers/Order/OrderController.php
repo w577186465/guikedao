@@ -104,9 +104,51 @@ class OrderController extends ApiController {
 		return Address::find($id);
 	}
 
+	public function cancel(Request $req, $id) {
+		$mid = $req->member->id;
+		$order = Order::find($id);
+		if ($order->member_id != $mid) {
+			return $this->failed('操作失败');
+		}
+
+		if ($order->status != 1) {
+			return $this->failed('只能取消未发货订单，特殊情况请联系工作人员。');
+		}
+
+		$order->status = 4;
+		$res = $order->save();
+		if (!$res) {
+			return $this->failed('发生未知错误，操作失败。');
+		}
+
+		// 获取卡券
+		$res = QuanService::add($mid, $order->quan);
+		if (!isset($res['status'])) {
+			return $this->failed('发生未知错误，操作失败。');
+		} elseif ($res['status'] != 'success') {
+			return $this->failed($res['message']);
+		}
+
+		return $this->message('success');
+	}
+
 	// 发货
 	public function send_out(Request $req, $id) {
-		return $this->set_order_status($id, 2);
+		$order = Order::find($id);
+		if ($order->status > 1) {
+			return $this->failed('该订单已发货');
+		}
+		if ($order->status == 4) {
+			return $this->failed('该订单已取消');
+		}
+
+		$order->status = 2;
+		$res = $order->save();
+		if ($res) {
+			return $this->message('success');
+		}
+
+		return $this->failed('发生未知错误，操作失败。');
 	}
 
 	public function express_send_out(Request $req, $id) {
@@ -123,7 +165,19 @@ class OrderController extends ApiController {
 			return $this->failed('发生未知错误，操作失败。');
 		}
 
-		return $this->set_order_status($id, 2);
+		$order = Order::find($id);
+		if ($order->status > 1) {
+			return $this->failed('该订单已发货');
+		}
+		if ($order->status == 4) {
+			return $this->failed('该订单已取消');
+		}
+
+		$order->status = 2;
+		$res = $order->save();
+		if ($res) {
+			return $this->message('success');
+		}
 	}
 
 	// 收货

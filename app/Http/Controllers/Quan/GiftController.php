@@ -111,6 +111,7 @@ class GiftController extends ApiController {
 		}
 
 		$info = Gift::with('quans')->where('coding', $coding)->first();
+		$info->member = $info->member;
 		$info->my = $req->member->id == $info->member_id;
 
 		return $info;
