@@ -16,14 +16,15 @@ class MemberController extends ApiController {
 		return MyQuan::with('quan')->where('user_id', $userid)->orderBy('id', 'desc')->get();
 	}
 
-	// public function share() {
-	// 	$app = app('wechat.official_account');
-	// 	$config = $app->jssdk->buildConfig(array('onMenuShareAppMessage'), false);
-	// 	$values = [
-	// 		'config' => $config,
-	// 	];
-	// 	return view('quan_share', $values);
-	// }
+	public function share() {
+		$app = app('wechat.official_account');
+		// $app->setUrl('http://zunyu.weixin.dlwanglong.com');
+		$config = $app->jssdk->buildConfig(array('onMenuShareAppMessage'), false);
+		$values = [
+			'config' => $config,
+		];
+		return view('quan_share', $values);
+	}
 
 	// public function send(Request $req) {
 	// 	if (!$req->filled('quans')) {
