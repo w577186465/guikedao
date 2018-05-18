@@ -41,6 +41,7 @@ class MemberController extends ApiController {
 			$message['openid'] = $openid;
 			$values = [
 				'message' => $message,
+				'reffer' => $req->input('reffer', ''),
 			];
 			return view('member_register', $values);
 		}
@@ -61,11 +62,12 @@ class MemberController extends ApiController {
 		}
 		$values = [
 			'message' => $message,
+			'reffer' => $req->input('reffer', ''),
 		];
 		return view('member_register', $values);
 	}
 
-	public function login() {
+	public function login(Request $req) {
 		$user = session('wechat.oauth_user');
 		$openid = $user['default']['original']['openid'];
 		$find = Member::where('openid', $openid)->first();
@@ -81,7 +83,7 @@ class MemberController extends ApiController {
 			$message['message'] = '用户不存在';
 		}
 
-		$values = ['message' => $message];
+		$values = ['message' => $message, 'reffer' => $req->input('reffer', '')];
 		return view('member_login', $values);
 	}
 

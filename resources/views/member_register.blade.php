@@ -9,7 +9,7 @@
           var message = @json($message);
           if (message.status === 'success') {
             window.localStorage.openid = message.openid
-            window.location.href = '/#/quan'
+            window.location.href = '/#{{$reffer}}'
           } else if (message.status === 'error') {
             alert(message.message)
             window.location.href = '/#/register'
