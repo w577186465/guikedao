@@ -9,13 +9,15 @@ use Illuminate\Http\Request;
 class IndexController extends ApiController {
 
 	public function add(Request $req) {
-		if (!$req->filled('name', 'money')) {
+		if (!$req->filled('name', 'money', 'description', 'inside')) {
 			return $this->failed("参数不正确");
 		}
 
 		$quan = new Quan;
 		$quan->name = $req->input('name');
 		$quan->money = $req->input('money');
+		$quan->description = $req->input('description');
+		$quan->inside = $req->input('inside');
 		$res = $quan->save();
 		if ($res) {
 			return $this->message('success');
@@ -26,7 +28,7 @@ class IndexController extends ApiController {
 
 	public function edit(Request $req, $id) {
 		$quan = Quan::find($id);
-		$data = $req->only(['name', 'money']);
+		$data = $req->only(['name', 'money', 'description', 'inside']);
 		foreach ($data as $key => $value) {
 			$quan->$key = $value;
 		}

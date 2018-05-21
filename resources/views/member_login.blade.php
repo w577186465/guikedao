@@ -9,9 +9,9 @@
         var message = @json($message);
         if (message.status === 'success') {
           window.localStorage.openid = message.data
-          window.location.href = '/#{{$reffer}}'
+          window.location.href = '{{$reffer}}'
         } else {
-          window.location.href = '/#/register?reffer={{$reffer}}'
+          window.location.href = '/register?reffer={{$reffer}}'
         }
       }()
     </script>
