@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class GiftController extends ApiController {
 
 	public function produce(Request $req) {
-		if (!$req->filled('quans')) {
+		if (!$req->filled('quans') || empty($req->filled('quans'))) {
 			return $this->failed('请选择卡券');
 		}
 

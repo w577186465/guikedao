@@ -71,10 +71,12 @@ class MemberController extends ApiController {
 		$user = session('wechat.oauth_user');
 		$openid = $user['default']['original']['openid'];
 		$find = Member::where('openid', $openid)->first();
+
 		// 返回数据
 		$message = [
 			'type' => 'login',
 		];
+
 		if ($find) {
 			$message['status'] = 'success';
 			$message['data'] = $openid;
