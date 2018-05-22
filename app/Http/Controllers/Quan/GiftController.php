@@ -129,7 +129,7 @@ class GiftController extends ApiController {
 		}
 
 		if ($req->input('status') == 1) {
-			return Gift::with('receive')->where($where)->paginate($pagesize);
+			return Gift::with('receive')->where($where)->orderBy('id', 'desc')->paginate($pagesize);
 		} else {
 			return Gift::where($where)->paginate($pagesize);
 		}
