@@ -7,6 +7,7 @@ use App\GiftQuan;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Quan\QuanService;
 use App\Order;
+use App\OrderQuan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -99,11 +100,18 @@ class GiftController extends ApiController {
 		$order->order_type = 'express';
 		$order->adress = $address;
 		$res = $order->save();
-		if ($res) {
-			return $this->message('success');
+
+		$quans = GiftQuan::where('gift_id', $gift->id)->get();
+		foreach ($quans as $key => $value) {
+			$orderQuan = new OrderQuan;
+			$orderQuan->name = $value->name;
+			$orderQuan->order_id = $order->id;
+			$orderQuan->quan_id = $value->quan_id;
+			$orderQuan->num = $value->num;
+			$orderQuan->save();
 		}
 
-		return $this->failed('failed');
+		return $this->message('success');
 	}
 
 	public function gift(Request $req, $id) {
