@@ -6,6 +6,7 @@ use App\Gift;
 use App\GiftQuan;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Quan\QuanService;
+use App\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -50,6 +51,23 @@ class GiftController extends ApiController {
 	}
 
 	public function receive(Request $req, $coding) {
+		if (!$req->filled("name", "tel", "region", "address")) {
+			return $this->failed("请正确填写信息");
+		}
+
+		$name = $req->input('name');
+		$tel = $req->input('tel');
+		$region = $req->input('region');
+		$address = $req->input('address');
+
+		$address = "{$region}{$address}";
+		if (!$req->filled("zip")) {
+			$zip = $req->input('zip');
+			$address .= "邮政编码：{$zip},";
+		}
+
+		$address .= "收货人：{$name}，电话：{$tel}";
+
 		$gift = Gift::with('quans')->where('coding', $coding)->first();
 		$quans = $gift->quans;
 		$mid = $req->member->id;
@@ -74,12 +92,18 @@ class GiftController extends ApiController {
 
 		Gift::where('coding', $coding)->update(['receiver' => $mid, 'status' => 1]);
 
-		$res = QuanService::add($mid, $quans);
-		if ($res['status'] == 'error') {
-			return $this->failed($res['message']);
+		$order = new Order;
+		$order->member_id = $gift->member_id;
+		$order->coding = date('YmdHis') . rand(1000, 9999);
+		$order->status = 1;
+		$order->order_type = 'express';
+		$order->adress = $address;
+		$res = $order->save();
+		if ($res) {
+			return $this->message('success');
 		}
 
-		return $this->message('success');
+		return $this->failed('failed');
 	}
 
 	public function gift(Request $req, $id) {

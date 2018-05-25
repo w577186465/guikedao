@@ -73,7 +73,7 @@ Route::group(['middleware' => ['web', 'weixin']], function () {
 		Route::post('/gift/produce', 'GiftController@produce')->name('gift-produce'); // 生成礼包
 		Route::get('/gift/{id}', 'GiftController@gift')->where(['id' => '[0-9]+'])->name('gift-info'); // 获取礼包信息
 		Route::get('/gift/coding/{coding}', 'GiftController@gift_bycoding')->name('gift-info-bycoding'); // 通过单号获取
-		Route::get('/gift/receive/{coding}', 'GiftController@receive')->name('gift-bycoding'); // 领取礼包
+		Route::post('/gift/receive/{coding}', 'GiftController@receive')->name('gift-bycoding'); // 领取礼包
 		Route::get('/gift/list', 'GiftController@list')->name('my-gift-list'); // 领取礼包
 	});
 
