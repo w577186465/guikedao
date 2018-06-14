@@ -94,12 +94,12 @@ Route::group(['middleware' => ['web', 'weixin']], function () {
 });
 
 Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
-	Route::group(['namespace' => 'Weixin'], function () {
-		Route::post('/weixin/jssdk_config', 'CommonController@jssdk_config')->name('weixin-jssdk-config');
-	});
-
 	Route::get('/member/register', 'User\MemberController@register')->name('member-register'); // 注册
 	Route::get('/member/login', 'User\MemberController@login')->name('member-login');
+});
+
+Route::group(['namespace' => 'Weixin'], function () {
+	Route::post('/weixin/jssdk_config', 'CommonController@jssdk_config')->name('weixin-jssdk-config');
 });
 
 // 公共接口
