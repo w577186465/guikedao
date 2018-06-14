@@ -130,9 +130,6 @@ class GiftController extends ApiController {
 		$gift = Gift::with('quans')->where('coding', $coding)->first();
 		if ($gift->status == 1) {
 			$msg = '已经被人领走了...';
-			if ($gift->receiver == $req->member->id) {
-				$msg = '你已经领过了哦';
-			}
 			return $this->failed($msg);
 		}
 
