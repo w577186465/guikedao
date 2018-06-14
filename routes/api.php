@@ -72,7 +72,6 @@ Route::group(['middleware' => ['web', 'weixin']], function () {
 		// Route::post('/my_quan/send', 'MemberController@send')->name('admin-quan-send'); // 卡券列表 全部
 		Route::post('/gift/produce', 'GiftController@produce')->name('gift-produce'); // 生成礼包
 		Route::get('/gift/{id}', 'GiftController@gift')->where(['id' => '[0-9]+'])->name('gift-info'); // 获取礼包信息
-		Route::get('/gift/coding/{coding}', 'GiftController@gift_bycoding')->name('gift-info-bycoding'); // 通过单号获取
 		Route::post('/gift/receive/{coding}', 'GiftController@receive')->name('gift-bycoding'); // 领取礼包
 		Route::get('/gift/list', 'GiftController@list')->name('my-gift-list'); // 领取礼包
 	});
@@ -100,6 +99,13 @@ Route::group(['middleware' => ['web', 'weixin']], function () {
 Route::group(['middleware' => ['web', 'wechat.oauth']], function () {
 	Route::get('/member/register', 'User\MemberController@register')->name('member-register'); // 注册
 	Route::get('/member/login', 'User\MemberController@login')->name('member-login');
+});
+
+// 公共接口
+Route::group([], function () {
+	Route::group(['namespace' => 'Quan'], function () {
+		Route::get('/gift/coding/{coding}', 'GiftController@gift_bycoding')->name('gift-info-bycoding'); // 通过单号获取礼盒信息
+	});
 });
 
 Route::get('/register', function () {
