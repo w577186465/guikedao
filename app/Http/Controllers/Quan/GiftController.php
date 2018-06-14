@@ -71,7 +71,7 @@ class GiftController extends ApiController {
 
 		$gift = Gift::with('quans')->where('coding', $coding)->first();
 		$quans = $gift->quans;
-		$mid = $req->member->id;
+		$mid = isset($req->member->id) ? $req->member->id : 0;
 		$status = $gift->status;
 
 		if ($status == 1) {
@@ -82,7 +82,7 @@ class GiftController extends ApiController {
 			}
 			return $this->failed($msg);
 		} elseif ($gift->status == 2) {
-			$this->failed('该礼包超过24小时未领取，已失效。');
+			return $this->failed('该礼包超过24小时未领取，已失效。');
 		}
 
 		$now = Carbon::now();
